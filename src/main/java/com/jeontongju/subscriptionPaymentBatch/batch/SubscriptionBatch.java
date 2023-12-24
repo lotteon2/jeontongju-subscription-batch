@@ -38,7 +38,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Configuration
 @Slf4j
-public class subscriptionBatch {
+public class SubscriptionBatch {
     private final SubscriptionKakaoRepository subscriptionKakaoRepository;
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
