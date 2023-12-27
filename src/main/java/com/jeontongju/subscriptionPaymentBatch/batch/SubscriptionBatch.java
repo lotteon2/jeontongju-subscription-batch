@@ -26,14 +26,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import javax.persistence.EntityManagerFactory;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Configuration
@@ -75,7 +72,7 @@ public class SubscriptionBatch {
                 .pageSize(chunkSize)
                 .queryString("SELECT c FROM Consumer c WHERE c.isDeleted = :isDeleted AND c.isRegularPayment = :isRegularPayment ORDER BY c.consumerId ASC")
                 .parameterValues(params)
-                .build();
+        .build();
     }
 
     @Bean
@@ -87,21 +84,14 @@ public class SubscriptionBatch {
                 List<SubscriptionBatchInterface> subscriptionBatchDtoList = new ArrayList<>();
                 List<Subscription> subscriptionsToUpdate = new ArrayList<>();
 
-                for (Consumer consumer : items) {
-                    Optional<Subscription> latestSubscription = consumer.getSubscriptionList().stream().max(Comparator.comparing(Subscription::getEndDate));
-
-                    if (latestSubscription.isPresent()) {
-                        Subscription subscription = latestSubscription.get();
-                        LocalDate endDate = subscription.getEndDate().toLocalDate();
-                        if (endDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")).equals(date)) {
-                            subscription.addSubscriptionTime();
-                            subscriptionsToUpdate.add(subscription);
-                            subscriptionBatchDtoList.add(getSubscriptionBatchInfo(subscription));
-                        }
-                    }
+                List<Subscription> subscriptionList = subscriptionRepository.findSubscriptionsByConsumerIdsAndEndDate(
+                        items.stream().map(Consumer::getConsumerId).collect(Collectors.toList()), date);
+                for(Subscription subscription : subscriptionList){
+                    subscription.addSubscriptionTime();
+                    subscriptionBatchDtoList.add(getSubscriptionBatchInfo(subscription));
                 }
 
-                if(!subscriptionsToUpdate.isEmpty()) {
+                if(!subscriptionList.isEmpty()) {
                     subscriptionRepository.saveAll(subscriptionsToUpdate);
                     kafkaTemplate.send(KafkaTopicNameInfo.PAYMENT_SUBSCRIPTION,
                             SubscriptionBatchDto.builder().subscriptionBatchInterface(subscriptionBatchDtoList).build()
