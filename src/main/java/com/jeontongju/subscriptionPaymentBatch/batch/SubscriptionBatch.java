@@ -82,7 +82,6 @@ public class SubscriptionBatch {
             @Override
             public void write(List<? extends Consumer> items) {
                 List<SubscriptionBatchInterface> subscriptionBatchDtoList = new ArrayList<>();
-                List<Subscription> subscriptionsToUpdate = new ArrayList<>();
 
                 List<Subscription> subscriptionList = subscriptionRepository.findSubscriptionsByConsumerIdsAndEndDate(
                         items.stream().map(Consumer::getConsumerId).collect(Collectors.toList()), date);
@@ -92,7 +91,6 @@ public class SubscriptionBatch {
                 }
 
                 if(!subscriptionList.isEmpty()) {
-                    subscriptionRepository.saveAll(subscriptionsToUpdate);
                     kafkaTemplate.send(KafkaTopicNameInfo.PAYMENT_SUBSCRIPTION,
                             SubscriptionBatchDto.builder().subscriptionBatchInterface(subscriptionBatchDtoList).build()
                     );
