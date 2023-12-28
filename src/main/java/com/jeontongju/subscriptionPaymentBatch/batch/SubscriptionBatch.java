@@ -6,9 +6,13 @@ import com.jeontongju.subscriptionPaymentBatch.entity.SubscriptionKakao;
 import com.jeontongju.subscriptionPaymentBatch.repository.SubscriptionKakaoRepository;
 import com.jeontongju.subscriptionPaymentBatch.repository.SubscriptionRepository;
 import io.github.bitbox.bitbox.dto.KakaoBatchDto;
+import io.github.bitbox.bitbox.dto.MemberInfoForNotificationDto;
+import io.github.bitbox.bitbox.dto.ServerErrorForNotificationDto;
 import io.github.bitbox.bitbox.dto.SubscriptionBatchDto;
 import io.github.bitbox.bitbox.dto.SubscriptionBatchInterface;
+import io.github.bitbox.bitbox.enums.NotificationTypeEnum;
 import io.github.bitbox.bitbox.enums.PaymentMethodEnum;
+import io.github.bitbox.bitbox.enums.RecipientTypeEnum;
 import io.github.bitbox.bitbox.util.KafkaTopicNameInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static java.time.LocalDateTime.now;
+
 @RequiredArgsConstructor
 @Configuration
 @Slf4j
@@ -42,6 +48,7 @@ public class SubscriptionBatch {
     private final EntityManagerFactory emf;
     private int chunkSize = 500;
     private final KafkaTemplate<String, SubscriptionBatchDto> kafkaTemplate;
+    private final KafkaTemplate<String, MemberInfoForNotificationDto> memberInfoForNotificationDtoKafkaProcessor;
     private final SubscriptionRepository subscriptionRepository;
 
     // 매 00:00에 도는 배치
@@ -83,8 +90,9 @@ public class SubscriptionBatch {
             public void write(List<? extends Consumer> items) {
                 List<SubscriptionBatchInterface> subscriptionBatchDtoList = new ArrayList<>();
 
-                List<Subscription> subscriptionList = subscriptionRepository.findSubscriptionsByConsumerIdsAndEndDate(
-                        items.stream().map(Consumer::getConsumerId).collect(Collectors.toList()), date);
+                List<Long> consumerIds = items.stream().map(Consumer::getConsumerId).collect(Collectors.toList());
+                List<Subscription> subscriptionList = subscriptionRepository.findSubscriptionsByConsumerIdsAndEndDate(consumerIds, date);
+
                 for(Subscription subscription : subscriptionList){
                     subscription.addSubscriptionTime();
                     subscriptionBatchDtoList.add(getSubscriptionBatchInfo(subscription));
@@ -94,6 +102,16 @@ public class SubscriptionBatch {
                     kafkaTemplate.send(KafkaTopicNameInfo.PAYMENT_SUBSCRIPTION,
                             SubscriptionBatchDto.builder().subscriptionBatchInterface(subscriptionBatchDtoList).build()
                     );
+
+                    for(Long id : consumerIds){
+                        memberInfoForNotificationDtoKafkaProcessor.send(KafkaTopicNameInfo.SEND_NOTIFICATION,
+                                ServerErrorForNotificationDto.builder()
+                                        .recipientId(id)
+                                        .recipientType(RecipientTypeEnum.ROLE_CONSUMER)
+                                        .notificationType(NotificationTypeEnum.SUCCESS_SUBSCRIPTION_PAYMENTS)
+                                        .createdAt(now())
+                                .build());
+                    }
                 }
             }
         };
