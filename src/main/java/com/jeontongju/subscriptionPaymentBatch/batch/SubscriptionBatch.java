@@ -105,7 +105,7 @@ public class SubscriptionBatch {
 
                     for(Long id : consumerIds){
                         memberInfoForNotificationDtoKafkaProcessor.send(KafkaTopicNameInfo.SEND_NOTIFICATION,
-                                ServerErrorForNotificationDto.builder()
+                                MemberInfoForNotificationDto.builder()
                                         .recipientId(id)
                                         .recipientType(RecipientTypeEnum.ROLE_CONSUMER)
                                         .notificationType(NotificationTypeEnum.SUCCESS_SUBSCRIPTION_PAYMENTS)
