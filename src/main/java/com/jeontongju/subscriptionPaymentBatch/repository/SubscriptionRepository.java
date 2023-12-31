@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface SubscriptionRepository extends JpaRepository<Subscription, Long> {
     @Query("SELECT s FROM Subscription s " +
-            "JOIN s.consumer c " +
-            "LEFT JOIN Subscription s2 ON s.consumer.consumerId = s2.consumer.consumerId AND s.endDate < s2.endDate " +
+            "JOIN FETCH s.consumer c " +
+            "LEFT JOIN FETCH Subscription s2 ON s.consumer.consumerId = s2.consumer.consumerId AND s.endDate < s2.endDate " +
             "WHERE s2.consumer.consumerId IS NULL " +
             "AND c.consumerId IN :consumerIds " +
             "AND REPLACE(SUBSTRING(s.endDate, 1, 10), '-', '') = :date")
