@@ -7,7 +7,6 @@ import com.jeontongju.subscriptionPaymentBatch.repository.SubscriptionKakaoRepos
 import com.jeontongju.subscriptionPaymentBatch.repository.SubscriptionRepository;
 import io.github.bitbox.bitbox.dto.KakaoBatchDto;
 import io.github.bitbox.bitbox.dto.MemberInfoForNotificationDto;
-import io.github.bitbox.bitbox.dto.ServerErrorForNotificationDto;
 import io.github.bitbox.bitbox.dto.SubscriptionBatchDto;
 import io.github.bitbox.bitbox.dto.SubscriptionBatchInterface;
 import io.github.bitbox.bitbox.enums.NotificationTypeEnum;
@@ -71,13 +70,13 @@ public class SubscriptionBatch {
     public JpaPagingItemReader<Consumer> subscriptionReader() {
         Map<String, Object> params = new HashMap<>();
         params.put("isDeleted", false);
-        params.put("isRegularPayment", true);
+        params.put("isPaymentReservation", true);
 
         return new JpaPagingItemReaderBuilder<Consumer>()
                 .name("subscriptionReader")
                 .entityManagerFactory(emf)
                 .pageSize(chunkSize)
-                .queryString("SELECT c FROM Consumer c WHERE c.isDeleted = :isDeleted AND c.isRegularPayment = :isRegularPayment ORDER BY c.consumerId ASC")
+                .queryString("SELECT c FROM Consumer c WHERE c.isDeleted = :isDeleted AND c.isPaymentReservation = :isPaymentReservation ORDER BY c.consumerId ASC")
                 .parameterValues(params)
         .build();
     }
