@@ -2,10 +2,10 @@ package com.jeontongju.subscriptionPaymentBatch.batch;
 
 import com.jeontongju.KafkaConsumerMock;
 import com.jeontongju.TestBatchConfig;
-import com.jeontongju.subscriptionPaymentBatch.batch.repository.ConsumerRepository;
 import com.jeontongju.subscriptionPaymentBatch.entity.Consumer;
 import com.jeontongju.subscriptionPaymentBatch.entity.Subscription;
 import com.jeontongju.subscriptionPaymentBatch.entity.SubscriptionKakao;
+import com.jeontongju.subscriptionPaymentBatch.repository.ConsumerRepository;
 import com.jeontongju.subscriptionPaymentBatch.repository.SubscriptionKakaoRepository;
 import com.jeontongju.subscriptionPaymentBatch.repository.SubscriptionRepository;
 import io.github.bitbox.bitbox.enums.PaymentMethodEnum;
@@ -59,10 +59,10 @@ public class SubscriptionBatchTest {
 
         Consumer consumer = Consumer.builder()
                 .consumerId(1L).email("seonghun7304@naver.com").name("최성훈").point(1L).auctionCredit(1L).profileImageUrl("test")
-                .phoneNumber("01012345678").isFirstLogin(false).isAdult(false).isRegularPayment(false).isDeleted(false).build();
+                .phoneNumber("01012345678").isFirstLogin(false).isAdult(false).isPaymentReservation(false).isDeleted(false).build();
         Consumer consumer2 = Consumer.builder()
                 .consumerId(2L).email("seonghun7305@naver.com").name("최성훈2").point(12L).auctionCredit(12L).profileImageUrl("test2")
-                .phoneNumber("01012345679").isFirstLogin(false).isAdult(false).isRegularPayment(true).isDeleted(false).build();
+                .phoneNumber("01012345679").isFirstLogin(false).isAdult(false).isPaymentReservation(true).isDeleted(false).build();
         Subscription subscription = Subscription.builder().consumer(consumer2).subscriptionType(SubscriptionTypeEnum.YANGBAN)
                 .paymentAmount(3900L).startDate(startTime).endDate(endTime).paymentMethod(PaymentMethodEnum.KAKAO).build();
         SubscriptionKakao subscriptionKakao = SubscriptionKakao.builder().kakaoSid("1234").kakaoStoreCode("test").kakaoOrderId("test").subscription(subscription).build();
@@ -90,10 +90,10 @@ public class SubscriptionBatchTest {
 
         Consumer consumer = Consumer.builder()
                 .consumerId(1L).email("seonghun7304@naver.com").name("최성훈").point(1L).auctionCredit(1L).profileImageUrl("test")
-                .phoneNumber("01012345678").isFirstLogin(false).isAdult(false).isRegularPayment(false).isDeleted(false).build();
+                .phoneNumber("01012345678").isFirstLogin(false).isAdult(false).isPaymentReservation(false).isDeleted(false).build();
         Consumer consumer2 = Consumer.builder()
                 .consumerId(2L).email("seonghun7305@naver.com").name("최성훈2").point(12L).auctionCredit(12L).profileImageUrl("test2")
-                .phoneNumber("01012345679").isFirstLogin(false).isAdult(false).isRegularPayment(true).isDeleted(false).build();
+                .phoneNumber("01012345679").isFirstLogin(false).isAdult(false).isPaymentReservation(true).isDeleted(false).build();
         Subscription subscription = Subscription.builder().consumer(consumer2).subscriptionType(SubscriptionTypeEnum.YANGBAN)
                 .paymentAmount(3900L).startDate(startTime).endDate(endTime).paymentMethod(PaymentMethodEnum.KAKAO).build();
         SubscriptionKakao subscriptionKakao = SubscriptionKakao.builder().kakaoSid("1234").kakaoStoreCode("test").kakaoOrderId("test").subscription(subscription).build();
@@ -120,10 +120,10 @@ public class SubscriptionBatchTest {
 
         Consumer consumer = Consumer.builder()
                 .consumerId(1L).email("seonghun7304@naver.com").name("최성훈").point(1L).auctionCredit(1L).profileImageUrl("test")
-                .phoneNumber("01012345678").isFirstLogin(false).isAdult(false).isRegularPayment(false).isDeleted(false).build();
+                .phoneNumber("01012345678").isFirstLogin(false).isAdult(false).isPaymentReservation(false).isDeleted(false).build();
         Consumer consumer2 = Consumer.builder()
                 .consumerId(2L).email("seonghun7305@naver.com").name("최성훈2").point(12L).auctionCredit(12L).profileImageUrl("test2")
-                .phoneNumber("01012345679").isFirstLogin(false).isAdult(false).isRegularPayment(false).isDeleted(false).build();
+                .phoneNumber("01012345679").isFirstLogin(false).isAdult(false).isPaymentReservation(false).isDeleted(false).build();
         consumerRepository.save(consumer);
         consumerRepository.save(consumer2);
 
@@ -147,10 +147,10 @@ public class SubscriptionBatchTest {
 
         Consumer consumer = Consumer.builder()
                 .consumerId(1L).email("seonghun7304@naver.com").name("최성훈").point(1L).auctionCredit(1L).profileImageUrl("test")
-                .phoneNumber("01012345678").isFirstLogin(false).isAdult(false).isRegularPayment(false).isDeleted(false).build();
+                .phoneNumber("01012345678").isFirstLogin(false).isAdult(false).isPaymentReservation(false).isDeleted(false).build();
         Consumer consumer2 = Consumer.builder()
                 .consumerId(2L).email("seonghun7305@naver.com").name("최성훈2").point(12L).auctionCredit(12L).profileImageUrl("test2")
-                .phoneNumber("01012345679").isFirstLogin(false).isAdult(false).isRegularPayment(true).isDeleted(false).build();
+                .phoneNumber("01012345679").isFirstLogin(false).isAdult(false).isPaymentReservation(true).isDeleted(false).build();
         Subscription subscription = Subscription.builder().consumer(consumer2).subscriptionType(SubscriptionTypeEnum.YANGBAN)
                 .paymentAmount(3900L).startDate(startTime).endDate(endTime).paymentMethod(PaymentMethodEnum.KAKAO).build();
         SubscriptionKakao subscriptionKakao = SubscriptionKakao.builder().kakaoSid("1234").kakaoStoreCode("test").kakaoOrderId("test").subscription(subscription).build();
@@ -182,10 +182,10 @@ public class SubscriptionBatchTest {
 
         Consumer consumer = Consumer.builder()
                 .consumerId(1L).email("seonghun7304@naver.com").name("최성훈").point(1L).auctionCredit(1L).profileImageUrl("test")
-                .phoneNumber("01012345678").isFirstLogin(false).isAdult(false).isRegularPayment(false).isDeleted(false).build();
+                .phoneNumber("01012345678").isFirstLogin(false).isAdult(false).isPaymentReservation(false).isDeleted(false).build();
         Consumer consumer2 = Consumer.builder()
                 .consumerId(2L).email("seonghun7305@naver.com").name("최성훈2").point(12L).auctionCredit(12L).profileImageUrl("test2")
-                .phoneNumber("01012345679").isFirstLogin(false).isAdult(false).isRegularPayment(true).isDeleted(false).build();
+                .phoneNumber("01012345679").isFirstLogin(false).isAdult(false).isPaymentReservation(true).isDeleted(false).build();
         Subscription subscription = Subscription.builder().consumer(consumer2).subscriptionType(SubscriptionTypeEnum.YANGBAN)
                 .paymentAmount(3900L).startDate(startTime).endDate(endTime).paymentMethod(PaymentMethodEnum.KAKAO).build();
         SubscriptionKakao subscriptionKakao = SubscriptionKakao.builder().kakaoSid("1234").kakaoStoreCode("test").kakaoOrderId("test").subscription(subscription).build();

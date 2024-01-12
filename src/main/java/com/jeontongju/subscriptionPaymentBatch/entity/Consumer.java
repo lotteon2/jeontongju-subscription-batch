@@ -58,6 +58,10 @@ public class Consumer extends BaseEntity {
   @Builder.Default
   private Boolean isRegularPayment = false;
 
+  @Column(name = "is_payment_reservation", nullable = false)
+  @Builder.Default
+  private Boolean isPaymentReservation = false;
+
   @Column(name = "is_deleted", nullable = false)
   @Builder.Default
   private Boolean isDeleted = false;
