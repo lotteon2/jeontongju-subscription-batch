@@ -46,10 +46,6 @@ public class Consumer extends BaseEntity {
   @Column(name = "phone_number")
   private String phoneNumber;
 
-  @Column(name = "is_first_login", nullable = false)
-  @Builder.Default
-  private Boolean isFirstLogin = true;
-
   @Column(name = "is_default", nullable = false)
   @Builder.Default
   private Boolean isAdult = false;
@@ -65,6 +61,9 @@ public class Consumer extends BaseEntity {
   @Column(name = "is_deleted", nullable = false)
   @Builder.Default
   private Boolean isDeleted = false;
+
+  @Column(name = "age")
+  private Integer age;
 
   @OneToMany(mappedBy = "consumer")
   private List<Subscription> subscriptionList;
